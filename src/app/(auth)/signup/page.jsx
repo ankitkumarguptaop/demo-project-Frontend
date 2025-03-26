@@ -145,7 +145,7 @@ const SignUp = () => {
         variant="contained"
         component="label"
       >
-        <input type="file" onChange={handleImageUpload} />
+        <input  id="input" type="file" onChange={handleImageUpload} />
       </Box>
 
       <Button
