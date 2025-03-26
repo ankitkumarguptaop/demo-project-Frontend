@@ -60,7 +60,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar({ setSearch ,setPage }) {
   const dispatch = useDispatch();
 
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -154,7 +154,7 @@ export default function PrimarySearchAppBar() {
         <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
-      <Avatar alt="profile pic" src={profilePicture} />
+        <Avatar alt="profile pic" src={profilePicture} />
         <p>Profile</p>
       </MenuItem>
     </Menu>
@@ -179,7 +179,7 @@ export default function PrimarySearchAppBar() {
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            MUI
+           BookYourEvent
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -187,6 +187,10 @@ export default function PrimarySearchAppBar() {
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               inputProps={{ "aria-label": "search" }}
             />
           </Search>
@@ -219,7 +223,7 @@ export default function PrimarySearchAppBar() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-          <Avatar alt="profile pic" src={profilePicture} />
+              <Avatar alt="profile pic" src={profilePicture} />
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
