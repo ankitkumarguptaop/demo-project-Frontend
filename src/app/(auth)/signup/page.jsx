@@ -39,6 +39,7 @@ const SignUp = () => {
     profilePic: z.any(),
     role: z.enum(["normal", "admin", "superadmin"]),
   });
+  
   const dispatch = useDispatch();
   const {
     control,
@@ -111,6 +112,7 @@ const SignUp = () => {
         ></Input>
 
         <Input
+         isPassword={true}
           width="100%"
           lable={"Password"}
           margin={"10px 0px"}
@@ -145,7 +147,7 @@ const SignUp = () => {
         variant="contained"
         component="label"
       >
-        <input  id="input" type="file" onChange={handleImageUpload} />
+        <input  id={style["input"]} type="file" onChange={handleImageUpload} />
       </Box>
 
       <Button
@@ -161,7 +163,7 @@ const SignUp = () => {
           marginTop: "20px",
         }}
       >
-        Sign Up {name}
+        Sign Up 
       </Button>
 
       <Box

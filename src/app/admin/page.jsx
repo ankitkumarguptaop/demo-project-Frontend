@@ -1,36 +1,37 @@
 "use client";
 import Navbar from "@/components/navbar/navbar";
-import { listEvent } from "@/features/event/event.action";
+import { listAdminEvent } from "@/features/event/event.action";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import EventCard from "../../components/event-card/card";
-import { Box, Pagination } from "@mui/material";
+import EventCard from "../../components/admin-event-card/card";
+import { Box, Button, Pagination } from "@mui/material";
 import Nocontent from "../../assets/images/no-web-content-found.png";
 import Image from "next/image";
 import { MoonLoader } from "react-spinners";
-
-const Home = () => {
+import CreateEvent from "../../components/event-create-modal/modal";
+const Admin = () => {
   const dispatch = useDispatch();
-  const events = useSelector((state) => state.event.events);
+  const adminEvents = useSelector((state) => state.event.adminEvents);
   const isLoading = useSelector((state) => state.event.isLoading);
-  console.log("✌️events --->", events.rows);
 
   const [page, setPage] = useState(1);
   const [limit] = useState(6);
   const [search, setSearch] = useState("");
+  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
-    dispatch(listEvent({ limit, page, search }));
+    dispatch(listAdminEvent({ limit, page, search }));
   }, [page, limit, search]);
 
   return (
     <Box sx={{ height: "100vh", width: "100vw", boxSizing: "border-box" }}>
       <Navbar setSearch={setSearch} setPage={setPage}></Navbar>
+      <Button variant="contained" sx={{m:1}} onClick={()=>setOpen(true)}>Add Event</Button>
       {isLoading ? (
-        <Box width={"100%"} sx={{display:"flex" ,justifyContent:"center"}}>
+        <Box width={"100%"} sx={{ display: "flex", justifyContent: "center" }}>
           <MoonLoader color="black" />
         </Box>
-      ) : events?.rows?.length > 0 ? (
+      ) : adminEvents?.rows?.length > 0 ? (
         <Box
           sx={{
             height: "80%",
@@ -41,21 +42,22 @@ const Home = () => {
             justifyContent: "center",
           }}
         >
-          {events?.rows?.map((event) => {
+          {adminEvents?.rows?.map((event) => {
             return (
               <EventCard
                 key={event.id}
                 name={event.name}
                 details={event.details}
                 image={event.image}
+                seats={event.seats}
+                status={event.status}
                 price={event.ticket_price}
-                totalSeats={event.seats}
               ></EventCard>
             );
           })}
         </Box>
       ) : (
-        <Box sx={{ width: "100%", height: "91%", position: "relative" }}>
+        <Box sx={{ width: "100%", height: "80%", position: "relative" }}>
           <Image
             width={0}
             height={0}
@@ -66,7 +68,7 @@ const Home = () => {
           ></Image>
         </Box>
       )}
-      {events?.rows?.length > 0 && (
+      {adminEvents?.rows?.length > 0 && (
         <Box
           sx={{
             display: "flex",
@@ -76,13 +78,14 @@ const Home = () => {
           }}
         >
           <Pagination
-            count={Math.ceil(events.count / limit)}
+            count={Math.ceil(adminEvents?.count / limit)}
             onChange={(e, value) => setPage(value)}
           />
         </Box>
       )}
+      <CreateEvent open={open} setOpen={setOpen}></CreateEvent>
     </Box>
   );
 };
 
-export default Home;
+export default Admin;

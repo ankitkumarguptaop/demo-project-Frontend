@@ -5,12 +5,17 @@ import {
   deleteEvent,
   updateEvent,
   createEvent,
+  listAdminEvent,
+  listPendingEvent
+  
 } from "./event.action";
 
 import { enqueueSnackbar } from "notistack";
 
 const initialState = {
   events: [],
+  adminEvents: [],
+  pendingEvents: [],
   isLoading: false,
   error: null,
 };
@@ -29,6 +34,28 @@ export const eventSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(listEvent.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(listAdminEvent.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(listAdminEvent.fulfilled, (state, action) => {
+        state.adminEvents = action.payload.event;
+        state.isLoading = false;
+      })
+      .addCase(listAdminEvent.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(listPendingEvent.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(listPendingEvent.fulfilled, (state, action) => {
+        state.pendingEvents = action.payload.event;
+        state.isLoading = false;
+      })
+      .addCase(listPendingEvent.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       })
@@ -58,7 +85,10 @@ export const eventSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(createEvent.fulfilled, (state, action) => {
-        state.events = [...state.events , action.payload];
+        state.adminEvents = {
+          count: state.adminEvents.count + 1,
+          rows: [...state.adminEvents.rows, action.payload.event],
+        };
         state.isLoading = false;
       })
       .addCase(createEvent.rejected, (state, action) => {

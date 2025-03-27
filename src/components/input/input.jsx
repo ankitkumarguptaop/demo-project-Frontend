@@ -1,6 +1,8 @@
-import { TextField } from "@mui/material";
-import React from "react";
+'use client'
+import { IconButton, InputAdornment, TextField } from "@mui/material";
+import React, { useState } from "react";
 import style from "./input.module.css";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const Input = ({
   lable,
@@ -9,12 +11,18 @@ const Input = ({
   feildName,
   pattern,
   errors,
-  margin
-
+  margin,
+  isPassword=false
 }) => {
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
+
   return (
     <>
       <TextField
+        type={ isPassword ? showPassword ? "text" : "password" : "text"}
         className={style.input}
         variant="outlined"
         label={lable}
@@ -33,6 +41,20 @@ const Input = ({
             color: "#808080",
             fontWeight: "light",
           },
+        }}
+
+    InputProps={{ 
+             endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+              >
+                { isPassword  ? showPassword ? <Visibility /> : <VisibilityOff /> :<></>}
+              </IconButton>
+            </InputAdornment> 
+          )
         }}
       ></TextField>
       {errors[feildName] && (

@@ -48,7 +48,14 @@ const SignIn = () => {
             variant: "success",
             autoHideDuration: 5000,
           });
-          redirect("/home");
+          console.log("hkh", res.payload.user.user.role === "normal");
+          if (res.payload.user.user.role === "normal") {
+            redirect("/home");
+          } else if (res.payload.user.user.role === "admin") {
+            redirect("/admin");
+          } else {
+            redirect("/super-admin");
+          }
         }
       }
     );
@@ -68,6 +75,7 @@ const SignIn = () => {
         ></Input>
 
         <Input
+          isPassword={true}
           width="100%"
           lable={"Password"}
           margin={"10px 0px"}
