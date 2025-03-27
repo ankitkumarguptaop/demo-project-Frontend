@@ -50,6 +50,7 @@ const Home = () => {
                 image={event.image}
                 price={event.ticket_price}
                 totalSeats={event.seats}
+                eventId={event.id}
               ></EventCard>
             );
           })}

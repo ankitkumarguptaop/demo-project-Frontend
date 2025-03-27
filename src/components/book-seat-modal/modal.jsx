@@ -10,11 +10,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../input/input";
 import styles from "./modal.module.css";
 
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { FormControl } from "@mui/material";
+import { FormControl, Typography } from "@mui/material";
 import { useState } from "react";
 import { enqueueSnackbar } from "notistack";
+import { allocateSeats, countAllocatedSeats } from "@/features/seat/seat.action";
 
 const style = {
   position: "absolute",
@@ -30,7 +30,11 @@ const style = {
 
 export default function BasicModal({ open, setOpen, price, eventId }) {
   const formSchema = z.object({
-    totalSeats: z.string().min(1, "Enter valid total seats"),
+    totalSeats: z
+      .string()
+      .refine((val) => !isNaN(val) && parseInt(val) > 0, {
+        message: "Total seats must be greater than 0",
+      }),
   });
 
   const dispatch = useDispatch();
@@ -40,27 +44,30 @@ export default function BasicModal({ open, setOpen, price, eventId }) {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors ,isValid},
     reset,
+    watch
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       totalSeats: "",
     },
+    mode: "onChange",
   });
-
+  const totalSeats = watch("totalSeats");
   const handleClose = () => setOpen(false);
 
   const onSubmit = async (data) => {
     console.log("✌️data --->", data);
     const res = await dispatch(
-      allocateSeats({ eventId: eventId, totalSeats: totalSeats })
+      allocateSeats({ eventId: eventId, totalSeats: data.totalSeats })
     );
     if (res.meta.requestStatus === "fulfilled") {
-      enqueueSnackbar("Sucessfuly Event created in", {
+      enqueueSnackbar("Sucessfuly allocated seats ", {
         variant: "success",
         autoHideDuration: 5000,
       });
+      dispatch(countAllocatedSeats({ eventId: eventId }));
       reset();
     }
     handleClose();
@@ -68,47 +75,48 @@ export default function BasicModal({ open, setOpen, price, eventId }) {
 
   return (
     <FormControl>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Input
-              width="100%"
-              lable={"Total Seats"}
-              register={register}
-              feildName="totalSeats"
-              margin={"10px 0px"}
-              errors={errors}
-            ></Input>
-
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-                margin: "9px 5px",
-              }}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Input
+            width="100%"
+            lable={"Total Seats"}
+            register={register}
+            feildName="totalSeats"
+            margin={"10px 0px"}
+            errors={errors}
+          ></Input>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {isValid && totalSeats !== "" ? `Total Price : ${price * parseInt(totalSeats)}` : ""}
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              margin: "9px 5px",
+            }}
+          >
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              disabled={!isValid}
+              sx={{ color: "white", backgroundColor: "green" }}
             >
-              <Button
-                onClick={handleSubmit(onSubmit)}
-                sx={{ color: "white", backgroundColor: "green" }}
-              >
-                Book
-              </Button>
-              <Button
-                onClick={handleClose}
-                sx={{ color: "white", backgroundColor: "red" }}
-              >
-                Cancel
-              </Button>
-            </Box>
+              Book
+            </Button>
+            <Button
+              onClick={handleClose}
+              sx={{ color: "white", backgroundColor: "red" }}
+            >
+              Cancel
+            </Button>
           </Box>
-        </Modal>
-      </LocalizationProvider>
+        </Box>
+      </Modal>
     </FormControl>
   );
 }

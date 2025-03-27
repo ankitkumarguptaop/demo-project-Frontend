@@ -2,6 +2,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/auth.slice";
 import eventReducer from "../features/event/event.slice";
+import seatReducer from "../features/seat/seat.slice";
 
 
 
@@ -21,7 +22,8 @@ export const persistedAuthReducer = persistReducer(
 export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
-    event:eventReducer
+    event:eventReducer,
+    seat: seatReducer
     
   },
   middleware: (getDefaultMiddleware) =>

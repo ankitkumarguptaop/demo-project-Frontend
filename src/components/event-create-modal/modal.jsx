@@ -15,6 +15,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { FormControl } from "@mui/material";
 import { useState } from "react";
 import { enqueueSnackbar } from "notistack";
+import { createEvent } from "@/features/event/event.action";
 
 const style = {
   position: "absolute",

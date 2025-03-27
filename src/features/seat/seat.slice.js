@@ -1,6 +1,6 @@
 "use client";
 import { createSlice } from "@reduxjs/toolkit";
-import {  } from "./seat.action";
+import {countAllocatedSeats ,allocateSeats  } from "./seat.action";
 
 
 import { enqueueSnackbar } from "notistack";
@@ -22,13 +22,13 @@ export const authUserSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(signUpUser.pending, (state) => {
+      .addCase(allocateSeats.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(signUpUser.fulfilled, (state, action) => {
+      .addCase(allocateSeats.fulfilled, (state, action) => {
         state.isLoading = false;
       })
-      .addCase(signUpUser.rejected, (state, action) => {
+      .addCase(allocateSeats.rejected, (state, action) => {
         enqueueSnackbar(action.payload.message, {
           variant: "error",
           autoHideDuration: 5000,
@@ -36,18 +36,14 @@ export const authUserSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message;
       })
-      .addCase(signInUser.pending, (state) => {
+      .addCase(countAllocatedSeats.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(signInUser.fulfilled, (state, action) => {
-        state.currentUser = action.payload.user;
-        Cookies.set("jwt", action.payload.user.token, {
-          expires: 7,
-          secure: true,
-        });
+      .addCase(countAllocatedSeats.fulfilled, (state, action) => {
+        state.count = action.payload.count;
         state.isLoading = false;
       })
-      .addCase(signInUser.rejected, (state, action) => {
+      .addCase(countAllocatedSeats.rejected, (state, action) => {
         enqueueSnackbar(action.payload.message, {
           variant: "error",
           autoHideDuration: 5000,

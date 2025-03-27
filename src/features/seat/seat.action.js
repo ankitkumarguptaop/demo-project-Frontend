@@ -1,21 +1,18 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
-countAllocatedSeats,
-allocateSeats 
+  countAllocatedSeatsService,
+  allocateSeatsService
 } from "../../services/seat.service";
 import {
-  LIST_EVENT,
-  DELETE_EVENT,
-  UPDATE_EVENT,
-  CREATE_EVENT,
-  LIST_ADMIN_EVENT,
-  LIST_PENDING_EVENT,
-} from "./event.type";
+  ALLOCATE_SEATS
+  , COUNT_ALLOCATED_SEATS
+} from "./seat.type";
 
 export const allocateSeats = createAsyncThunk(
-  LIST_PENDING_EVENT,
+  ALLOCATE_SEATS,
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await listPendingEventService(payload);
+      const response = await allocateSeatsService(payload);
       const data = response.data;
       console.log("res data", data);
       return data;
@@ -26,11 +23,11 @@ export const allocateSeats = createAsyncThunk(
   }
 );
 
-export const createEvent = createAsyncThunk(
-  CREATE_EVENT,
+export const countAllocatedSeats = createAsyncThunk(
+  COUNT_ALLOCATED_SEATS,
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await createEventService(payload);
+      const response = await countAllocatedSeatsService(payload);
       const data = response.data;
       console.log("res data", data);
       return data;

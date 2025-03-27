@@ -6,8 +6,10 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
-export default function MediaCard({ image, name, details, status ,seats ,price ,leftSeats=100 }) {
+export default function MediaCard({ image, name, details, status ,seats ,price  }) {
+  const allocatedSeats = useSelector((state) => state.seat.count);
   const [eventImage] = useState(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/${image}`
       .replace(/ /g, "%20")
@@ -27,7 +29,7 @@ export default function MediaCard({ image, name, details, status ,seats ,price ,
          Ticket Price :  {price}
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Seats   {leftSeats}/{seats}  
+          Seats   {parseInt(seats)- parseInt(allocatedSeats)}/{seats}  
         </Typography> 
 
       </CardContent>
