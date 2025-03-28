@@ -1,35 +1,76 @@
 "use client";
 import Navbar from "@/components/navbar/navbar";
-import { listAdminEvent, listPendingEvent } from "@/features/event/event.action";
+import { listAllEvent } from "@/features/event/event.action";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import EventCard from "../../components/super-admin-event-card/card";
-import { Box, Button, Pagination } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  MenuItem,
+  Pagination,
+  Select,
+  TextField,
+} from "@mui/material";
 import Nocontent from "../../assets/images/no-web-content-found.png";
 import Image from "next/image";
 import { MoonLoader } from "react-spinners";
 
+
 const Admin = () => {
   const dispatch = useDispatch();
-  const pendingEvents = useSelector((state) => state.event.pendingEvents);
+  const allEvents = useSelector((state) => state.event.pendingEvents);
   const isLoading = useSelector((state) => state.event.isLoading);
 
   const [page, setPage] = useState(1);
   const [limit] = useState(6);
   const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
-    dispatch(listPendingEvent({ limit, page, search }));
-  }, [page, limit, search]);
+    dispatch(listAllEvent({ limit, page, search, status }));
+  }, [page, limit, search, status]);
 
   return (
     <Box sx={{ height: "100vh", width: "100vw", boxSizing: "border-box" }}>
-      <Navbar setSearch={setSearch} setPage={setPage}></Navbar>
+      <Navbar isSearchVisible={false} setSearch={setSearch} setPage={setPage}></Navbar>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "20px",
+          width: "100%",
+          height: "60px",
+          alignItems: "center",
+        }}
+      >
+        <TextField
+          label={"Search Events"}
+          size="small"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search Events"
+        ></TextField>
+        <FormControl width="80px">
+          <Select
+            fullWidth
+            size="small"
+            displayEmpty
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            <MenuItem value={""}>All</MenuItem>
+            <MenuItem value={"rejected"}>Rejected</MenuItem>
+            <MenuItem value={"pending"}>Pending</MenuItem>
+            <MenuItem value={"approved"}>Approved</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
       {isLoading ? (
         <Box width={"100%"} sx={{ display: "flex", justifyContent: "center" }}>
           <MoonLoader color="black" />
         </Box>
-      ) : pendingEvents?.rows?.length > 0 ? (
+      ) : allEvents?.rows?.length > 0 ? (
         <Box
           sx={{
             height: "80%",
@@ -40,7 +81,7 @@ const Admin = () => {
             justifyContent: "center",
           }}
         >
-          {pendingEvents?.rows?.map((event) => {
+          {allEvents?.rows?.map((event) => {
             return (
               <EventCard
                 key={event.id}
@@ -49,8 +90,9 @@ const Admin = () => {
                 image={event.image}
                 seats={event.seats}
                 isApproved={event.status}
-                id ={event.id}
+                id={event.id}
                 price={event.ticket_price}
+                status={event.status}
               ></EventCard>
             );
           })}
@@ -67,7 +109,7 @@ const Admin = () => {
           ></Image>
         </Box>
       )}
-      {pendingEvents?.rows?.length > 0 && (
+      {allEvents?.rows?.length > 0 && (
         <Box
           sx={{
             display: "flex",
@@ -77,12 +119,11 @@ const Admin = () => {
           }}
         >
           <Pagination
-            count={Math.ceil(pendingEvents?.count / limit)}
+            count={Math.ceil(allEvents?.count / limit)}
             onChange={(e, value) => setPage(value)}
           />
         </Box>
       )}
-    
     </Box>
   );
 };

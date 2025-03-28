@@ -60,7 +60,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function PrimarySearchAppBar({ setSearch ,setPage }) {
+export default function PrimarySearchAppBar({ setSearch ,setPage ,isSearchVisible=true}) {
   const dispatch = useDispatch();
 
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -181,7 +181,7 @@ export default function PrimarySearchAppBar({ setSearch ,setPage }) {
           >
            BookYourEvent
           </Typography>
-          <Search>
+       {isSearchVisible &&   <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -193,7 +193,7 @@ export default function PrimarySearchAppBar({ setSearch ,setPage }) {
               }}
               inputProps={{ "aria-label": "search" }}
             />
-          </Search>
+          </Search>}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton

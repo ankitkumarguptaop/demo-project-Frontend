@@ -20,5 +20,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/home', '/home/message','/' ,'/signup']
+  matcher: ['/home', '/home/message','/' ,'/signup' ,'/super-admin']
 };

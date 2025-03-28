@@ -5,7 +5,7 @@ import {
   deleteEventService,
   updateEventService,
   listAdminEventService,
-  listPendingEventService,
+  listAllEventService,
 } from "../../services/event.service";
 import {
   LIST_EVENT,
@@ -46,11 +46,11 @@ export const listAdminEvent = createAsyncThunk(
   }
 );
 
-export const listPendingEvent = createAsyncThunk(
+export const listAllEvent = createAsyncThunk(
   LIST_PENDING_EVENT,
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await listPendingEventService(payload);
+      const response = await listAllEventService(payload);
       const data = response.data;
       console.log("res data", data);
       return data;

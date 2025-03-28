@@ -13,7 +13,7 @@ export const createEventService = async (payload) => {
 export const listEventService = async (payload) => {
   const { limit = 5, page = 1, search } = payload;
   return await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/events?page=${page}&limit=${limit}&search=${search}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/approved?page=${page}&limit=${limit}&search=${search}`,
     {
       withCredentials: true,
     }
@@ -30,10 +30,10 @@ export const listAdminEventService = async (payload) => {
   );
 };
 
-export const listPendingEventService = async (payload) => {
-  const { limit = 5, page = 1, search } = payload;
+export const listAllEventService = async (payload) => {
+  const { limit = 5, page = 1, search, status } = payload;
   return await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/pending?page=${page}&limit=${limit}&search=${search}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/events?page=${page}&limit=${limit}&search=${search}&status=${status}`,
     {
       withCredentials: true,
     }

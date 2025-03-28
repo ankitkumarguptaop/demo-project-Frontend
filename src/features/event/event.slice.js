@@ -6,7 +6,7 @@ import {
   updateEvent,
   createEvent,
   listAdminEvent,
-  listPendingEvent
+  listAllEvent
   
 } from "./event.action";
 
@@ -48,14 +48,14 @@ export const eventSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message;
       })
-      .addCase(listPendingEvent.pending, (state) => {
+      .addCase(listAllEvent.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(listPendingEvent.fulfilled, (state, action) => {
+      .addCase(listAllEvent.fulfilled, (state, action) => {
         state.pendingEvents = action.payload.event;
         state.isLoading = false;
       })
-      .addCase(listPendingEvent.rejected, (state, action) => {
+      .addCase(listAllEvent.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       })

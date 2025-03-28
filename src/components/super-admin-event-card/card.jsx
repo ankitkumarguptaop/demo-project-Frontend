@@ -7,11 +7,18 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateEvent } from "@/features/event/event.action";
+import { listAllEvent, updateEvent } from "@/features/event/event.action";
 
-export default function MediaCard({ image, name, details, seats ,id ,price}) {
-
-const dispatch =useDispatch();
+export default function MediaCard({
+  image,
+  name,
+  details,
+  seats,
+  id,
+  price,
+  status,
+}) {
+  const dispatch = useDispatch();
 
   const [eventImage] = useState(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/${image}`
@@ -32,10 +39,47 @@ const dispatch =useDispatch();
           Total Seats : {seats} Ticket Price : {price}
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button onClick={()=>dispatch(updateEvent({ id : id ,status:'approved'}))} size="small">Approve</Button>
-        <Button  onClick={()=>dispatch(updateEvent({  id : id ,status:'rejected'}))} size="small">Reject</Button>
-      </CardActions>
+      {status === "pending" ? (
+        <CardActions>
+          <Button
+            onClick={() =>{
+              dispatch(updateEvent({ id: id, status: "approved" }))
+              dispatch(listAllEvent({ limit:5, page:1, search:"", status:"" }))
+
+            }
+            }
+            size="small"
+          >
+            Approve
+          </Button>
+          <Button
+            onClick={() =>{
+              dispatch(updateEvent({ id: id, status: "rejected" }))
+              dispatch(listAllEvent({ limit:5, page:1, search:"", status:"" }))
+            }
+            }
+              
+            
+            size="small"
+          >
+            Reject
+          </Button>
+        </CardActions>
+      ) : (
+        <CardActions>
+          <Typography
+            sx={{
+              backgroundColor: status === "approved" ? "green" : "red",
+              borderRadius: "5px",
+              color: "white",
+              padding: "3px",
+            }}
+          >
+            {status === "approved" ? "Approved" : "Rejected"}
+          </Typography>
+          <Button size="small">Learn More</Button>
+        </CardActions>
+      )}
     </Card>
   );
 }
