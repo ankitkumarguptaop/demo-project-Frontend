@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import { useDispatch } from "react-redux";
-import { z } from "zod";
+import { set, z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../input/input";
@@ -14,7 +14,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { FormControl, Typography } from "@mui/material";
 import { useState } from "react";
 import { enqueueSnackbar } from "notistack";
-import { allocateSeats, countAllocatedSeats } from "@/features/seat/seat.action";
+import {
+  allocateSeats,
+  countAllocatedSeats,
+} from "@/features/seat/seat.action";
+import { useEffect } from "react";
 
 const style = {
   position: "absolute",
@@ -28,12 +32,16 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ open, setOpen, price, eventId }) {
+export default function BasicModal({ open, setOpen, price, eventId  ,allSeats}) {
+  const [leftSeats, setLeftSeats] = useState();
   const formSchema = z.object({
     totalSeats: z
       .string()
       .refine((val) => !isNaN(val) && parseInt(val) > 0, {
         message: "Total seats must be greater than 0",
+      })
+      .refine((val) => !isNaN(val) && parseInt(val) < leftSeats, {
+        message: "Total seats must be less than left seats",
       }),
   });
 
@@ -44,9 +52,9 @@ export default function BasicModal({ open, setOpen, price, eventId }) {
     register,
     handleSubmit,
     setValue,
-    formState: { errors ,isValid},
+    formState: { errors, isValid },
     reset,
-    watch
+    watch,
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -67,11 +75,23 @@ export default function BasicModal({ open, setOpen, price, eventId }) {
         variant: "success",
         autoHideDuration: 5000,
       });
-      dispatch(countAllocatedSeats({ eventId: eventId }));
+      const countResponse = await dispatch(countAllocatedSeats({ eventId: eventId }));
+       setLeftSeats( parseInt(allSeats) - parseInt(countResponse.payload.count));
+
       reset();
     }
     handleClose();
   };
+
+  useEffect(() => {
+    async function countLeftSeats() {
+      const countResponse = await dispatch(
+        countAllocatedSeats({ eventId: eventId })
+      );
+      setLeftSeats( parseInt(allSeats) - parseInt(countResponse.payload.count));
+    }
+    countLeftSeats()
+  }, []);
 
   return (
     <FormControl>
@@ -90,8 +110,10 @@ export default function BasicModal({ open, setOpen, price, eventId }) {
             margin={"10px 0px"}
             errors={errors}
           ></Input>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {isValid && totalSeats !== "" ? `Total Price : ${price * parseInt(totalSeats)}` : ""}
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            {isValid && totalSeats !== ""
+              ? `Total Price : ${price * parseInt(totalSeats)}`
+              : ""}
           </Typography>
           <Box
             sx={{

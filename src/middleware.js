@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 
+
 export function middleware(request) {
   const user = request.cookies.get('jwt')
+
 
   const { pathname } = request.nextUrl;
    console.log('✌️pathname --->', pathname);

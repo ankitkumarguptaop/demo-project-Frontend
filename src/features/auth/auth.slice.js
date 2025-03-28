@@ -5,8 +5,7 @@ import { signInUser, signUpUser } from "./auth.action";
 import Cookies from "js-cookie";
 import { enqueueSnackbar } from "notistack";
 import { redirect } from "next/navigation";
-
-
+import { socket } from "@/configs/socket";
 
 const initialState = {
   currentUser: null,
@@ -22,8 +21,9 @@ export const authUserSlice = createSlice({
       state.error = null;
     },
     logout: (state, action) => {
-      Cookies.remove('jwt');
-      redirect('./')
+      Cookies.remove("jwt");
+      socket.disconnect()
+      redirect("./");
     },
   },
   extraReducers: (builder) => {
@@ -51,6 +51,7 @@ export const authUserSlice = createSlice({
           expires: 7,
           secure: true,
         });
+
         state.isLoading = false;
       })
       .addCase(signInUser.rejected, (state, action) => {

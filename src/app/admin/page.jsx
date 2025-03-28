@@ -18,6 +18,12 @@ const Admin = () => {
   const [limit] = useState(6);
   const [search, setSearch] = useState("");
   const [open, setOpen] = React.useState(false);
+  const [isEdited, setIsEditid] = React.useState(false);
+
+  
+
+
+
 
   useEffect(() => {
     dispatch(listAdminEvent({ limit, page, search }));
@@ -52,6 +58,7 @@ const Admin = () => {
                 seats={event.seats}
                 status={event.status}
                 price={event.ticket_price}
+                eventId={event.id}
               ></EventCard>
             );
           })}
@@ -83,7 +90,8 @@ const Admin = () => {
           />
         </Box>
       )}
-      <CreateEvent open={open} setOpen={setOpen}></CreateEvent>
+      <CreateEvent   open={open} setOpen={setOpen} ></CreateEvent>  
+
     </Box>
   );
 };
