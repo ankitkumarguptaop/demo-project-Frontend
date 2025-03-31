@@ -8,9 +8,12 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import CreateEvent from "../book-seat-modal/modal";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { countAllocatedSeats } from "@/features/seat/seat.action";
 import { useEffect } from "react";
+import { setCurretchat } from "@/features/event/event.slice";
+import { redirect } from "next/navigation";
+
 
 export default function MediaCard({
   image,
@@ -58,7 +61,17 @@ export default function MediaCard({
         <Button onClick={() => setOpen(true)} size="small">
           Book Ticket
         </Button>
-        <Button size="small">Learn More</Button>
+        <Button onClick={() => {
+          dispatch(setCurretchat({
+            id: eventId,
+            image,
+            name,
+            details,
+            price,
+            totalSeats,
+          }))
+          redirect('/home/message')}} size="small">Join Chat
+          </Button >
       </CardActions>
       <CreateEvent
         open={open}
@@ -67,6 +80,7 @@ export default function MediaCard({
         eventId={eventId}
         allSeats={totalSeats}
       ></CreateEvent>
+
     </Card>
   );
 }

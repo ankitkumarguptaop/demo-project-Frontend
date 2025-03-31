@@ -51,11 +51,11 @@ export const deleteEventService = async (payload) => {
 };
 
 export const updateEventService = async (payload) => {
-console.log('✌️payload --->', payload);
-  const { id } = payload;
+ console.log('✌️payload --->', payload);
+  const { id ,formdata } = payload;
   return await axios.patch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/${id}`,
-    payload,
+    formdata,
     {
       withCredentials: true,
     }

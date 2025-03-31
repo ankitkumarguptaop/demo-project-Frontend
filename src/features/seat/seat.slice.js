@@ -1,10 +1,9 @@
 "use client";
 import { createSlice } from "@reduxjs/toolkit";
-import {countAllocatedSeats ,allocateSeats  } from "./seat.action";
+import { countAllocatedSeats, allocateSeats } from "./seat.action";
 
 
 import { enqueueSnackbar } from "notistack";
-import { socket } from "@/configs/socket";
 
 
 
@@ -34,10 +33,10 @@ export const authUserSlice = createSlice({
           variant: "error",
           autoHideDuration: 5000,
         });
-       socket.emit("send-notification", {
-        room: action.payload.messages.room_id ,
-        message: action.payload.messages,
-      });
+        socket.emit("send-notification", {
+          room: action.payload.messages.room_id,
+          message: action.payload.messages,
+        });
         state.isLoading = false;
         state.error = action.error.message;
       })

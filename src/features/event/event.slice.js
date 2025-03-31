@@ -7,15 +7,17 @@ import {
   createEvent,
   listAdminEvent,
   listAllEvent
-  
+
 } from "./event.action";
 
 import { enqueueSnackbar } from "notistack";
+import { getSocket } from "@/configs/socket";
 
 const initialState = {
   events: [],
   adminEvents: [],
   pendingEvents: [],
+  selectedChat: null,
   isLoading: false,
   error: null,
 };
@@ -23,7 +25,11 @@ const initialState = {
 export const eventSlice = createSlice({
   name: "event",
   initialState,
-  reducers: {},
+  reducers: {
+    setCurretchat: (state, action) => {
+      state.selectedChat = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(listEvent.pending, (state) => {
@@ -31,9 +37,20 @@ export const eventSlice = createSlice({
       })
       .addCase(listEvent.fulfilled, (state, action) => {
         state.events = action.payload.event;
+        const rooms = state?.events?.rows?.map((event) => {
+          return event.id
+        })
+        console.log('✌️rooms --->', rooms);
+        const socket = getSocket()
+console.log('✌️socket rooommmmmmmmmmm--->', socket);
+        socket.emit("join-chats", rooms);
         state.isLoading = false;
       })
       .addCase(listEvent.rejected, (state, action) => {
+        enqueueSnackbar(action.payload.message, {
+          variant: "error",
+          autoHideDuration: 5000,
+        });
         state.isLoading = false;
         state.error = action.error.message;
       })
@@ -56,6 +73,10 @@ export const eventSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(listAllEvent.rejected, (state, action) => {
+        enqueueSnackbar(action.payload.message, {
+          variant: "error",
+          autoHideDuration: 5000,
+        });
         state.isLoading = false;
         state.error = action.error.message;
       })
@@ -67,6 +88,10 @@ export const eventSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(deleteEvent.rejected, (state, action) => {
+        enqueueSnackbar(action.payload.message, {
+          variant: "error",
+          autoHideDuration: 5000,
+        });
         state.isLoading = false;
         state.error = action.error.message;
       })
@@ -78,6 +103,10 @@ export const eventSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(updateEvent.rejected, (state, action) => {
+        enqueueSnackbar(action.payload.message, {
+          variant: "error",
+          autoHideDuration: 5000,
+        });
         state.isLoading = false;
         state.error = action.error.message;
       })
@@ -92,12 +121,16 @@ export const eventSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(createEvent.rejected, (state, action) => {
+        enqueueSnackbar(action.payload.message, {
+          variant: "error",
+          autoHideDuration: 5000,
+        });
         state.isLoading = false;
         state.error = action.error.message;
       });
   },
 });
 
-export const {} = eventSlice.actions;
+export const { setCurretchat } = eventSlice.actions;
 
 export default eventSlice.reducer;

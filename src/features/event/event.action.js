@@ -68,6 +68,8 @@ export const createEvent = createAsyncThunk(
       const response = await createEventService(payload);
       const data = response.data;
       console.log("res data", data);
+
+
       return data;
     } catch (error) {
       console.log(error.response.data);
@@ -93,8 +95,9 @@ export const deleteEvent = createAsyncThunk(
 
 export const updateEvent = createAsyncThunk(
   UPDATE_EVENT,
-  async (payload, { rejectWithValue }) => {
+  async (payload , { rejectWithValue }) => {
     try {
+      console.log('✌️payload --->', payload);
       const response = await updateEventService(payload);
       const data = response.data;
       console.log("res data", data);

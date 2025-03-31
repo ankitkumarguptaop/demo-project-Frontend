@@ -32,6 +32,7 @@ const style = {
 export default function BasicModal({
   open,
   setOpen,
+  id,
   defaultValues = {
     name: "",
     details: "",
@@ -39,7 +40,7 @@ export default function BasicModal({
     place: "",
     eventImage: "",
   },
-  isEdited=false,
+  isEdited = false,
 }) {
   const [date, setDate] = useState(null);
   const formSchema = z.object({
@@ -55,7 +56,9 @@ export default function BasicModal({
       .string()
       .transform((value) => value.replace(/\s+/g, ""))
       .pipe(z.string().min(3, "Enter valid Name")),
-    eventImage: z.any(),
+    eventImage: z
+      .any()
+      .refine((file) => file instanceof File, "Image is required"),
     seats: z.string().min(1, "Enter valid total seats"),
     price: z.string().min(1, "Enter valid ticket price"),
   });
@@ -91,7 +94,14 @@ export default function BasicModal({
 
   const onSubmit = async (data) => {
 
-    if(!isEdited){
+    if (!date) {
+      enqueueSnackbar("Please select a date and time", {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
+      return;
+    }
+    if (!isEdited) {
 
       console.log("✌️data --->", data);
       let formdata = new FormData();
@@ -102,9 +112,9 @@ export default function BasicModal({
       formdata.append("seats", data.seats);
       formdata.append("image", data.eventImage);
       formdata.append("ticketPrice", data.price);
-  
+
       const res = await dispatch(createEvent(formdata));
-  
+
       if (res.meta.requestStatus === "fulfilled") {
         enqueueSnackbar("Sucessfuly Event created in", {
           variant: "success",
@@ -113,9 +123,8 @@ export default function BasicModal({
         reset();
       }
 
-
     }
-    else{
+    else {
       console.log("✌️data --->", data);
       let formdata = new FormData();
       formdata.append("name", data.name);
@@ -125,9 +134,10 @@ export default function BasicModal({
       formdata.append("seats", data.seats);
       formdata.append("image", data.eventImage);
       formdata.append("ticketPrice", data.price);
-  
-      const res = await dispatch(updateEvent(formdata));
-  
+
+
+      const res = await dispatch(updateEvent({ formdata, id }));
+
       if (res.meta.requestStatus === "fulfilled") {
         enqueueSnackbar("Sucessfuly Event Updated in", {
           variant: "success",
@@ -218,12 +228,12 @@ export default function BasicModal({
                 margin: "9px 5px",
               }}
             >
-             {isEdited? <Button
+              {isEdited ? <Button
                 onClick={handleSubmit(onSubmit)}
                 sx={{ color: "white", backgroundColor: "green" }}
               >
                 Update
-              </Button>: <Button
+              </Button> : <Button
                 onClick={handleSubmit(onSubmit)}
                 sx={{ color: "white", backgroundColor: "green" }}
               >

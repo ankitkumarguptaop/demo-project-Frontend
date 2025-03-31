@@ -14,7 +14,6 @@ import facebook from "../../../assets/images/Icon.png";
 import Image from "next/image";
 import Link from "next/link";
 import { enqueueSnackbar } from "notistack";
-import { socket } from "@/configs/socket";
 
 const SignIn = () => {
   const formSchema = z.object({
@@ -45,13 +44,11 @@ const SignIn = () => {
     dispatch(signInUser({ email: data.email, password: data.password })).then(
       (res) => {
         if (res.meta.requestStatus === "fulfilled") {
-      
-          console.log("✌️socket --->", socket);
           enqueueSnackbar("Sucessfuly Loged in", {
             variant: "success",
             autoHideDuration: 5000,
           });
-          socket.connect()
+       
           console.log("hkh", res.payload.user.user.role === "normal");
           if (res.payload.user.user.role === "normal") {
             redirect("/home");

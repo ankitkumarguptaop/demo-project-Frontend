@@ -1,33 +1,42 @@
 "use client";
 import Navbar from "@/components/navbar/navbar";
 import { listEvent } from "@/features/event/event.action";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import EventCard from "../../components/event-card/card";
 import { Box, Pagination } from "@mui/material";
 import Nocontent from "../../assets/images/no-web-content-found.png";
 import Image from "next/image";
 import { MoonLoader } from "react-spinners";
+import { useSocket } from "@/hooks/socket";
+import { setSocket } from "@/features/auth/auth.slice";
+import { getSocket, initializeSocket } from "@/configs/socket";
 
 const Home = () => {
   const dispatch = useDispatch();
   const events = useSelector((state) => state.event.events);
   const isLoading = useSelector((state) => state.event.isLoading);
-  console.log("✌️events --->", events.rows);
-
   const [page, setPage] = useState(1);
   const [limit] = useState(6);
   const [search, setSearch] = useState("");
+  const currentUser = useSelector((state) => state.auth.currentUser);
 
   useEffect(() => {
-    dispatch(listEvent({ limit, page, search }));
+  initializeSocket(currentUser.user.id);
+  }
+    , [currentUser.id]
+  );
+
+
+  useEffect(() => {
+    dispatch(listEvent({ limit, page, search , }));
   }, [page, limit, search]);
 
   return (
     <Box sx={{ height: "100vh", width: "100vw", boxSizing: "border-box" }}>
       <Navbar setSearch={setSearch} setPage={setPage}></Navbar>
       {isLoading ? (
-        <Box width={"100%"} sx={{display:"flex" ,justifyContent:"center"}}>
+        <Box width={"100%"} sx={{ display: "flex", justifyContent: "center" }}>
           <MoonLoader color="black" />
         </Box>
       ) : events?.rows?.length > 0 ? (

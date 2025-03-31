@@ -89,6 +89,7 @@ export default function MediaCard({
       </CardActions>
       <CreateEvent
         isEdited={true}
+        id={eventId}
         defaultValues={defaultValues}
         open={open}
         setOpen={setOpen}
