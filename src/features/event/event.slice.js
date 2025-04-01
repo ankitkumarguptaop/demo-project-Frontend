@@ -40,9 +40,7 @@ export const eventSlice = createSlice({
         const rooms = state?.events?.rows?.map((event) => {
           return event.id
         })
-        console.log('✌️rooms --->', rooms);
         const socket = getSocket()
-console.log('✌️socket rooommmmmmmmmmm--->', socket);
         socket.emit("join-chats", rooms);
         state.isLoading = false;
       })

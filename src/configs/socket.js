@@ -22,7 +22,7 @@ export const initializeSocket = (userId) => {
 };
 export const getSocket = () => {
     if (!socket) {
-      console.warn("⚠️ Socket is not initialized!");
+      console.log("⚠️ Socket is not initialized!");
     }
     return socket;
   };

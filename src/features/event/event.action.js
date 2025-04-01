@@ -97,7 +97,6 @@ export const updateEvent = createAsyncThunk(
   UPDATE_EVENT,
   async (payload , { rejectWithValue }) => {
     try {
-      console.log('✌️payload --->', payload);
       const response = await updateEventService(payload);
       const data = response.data;
       console.log("res data", data);

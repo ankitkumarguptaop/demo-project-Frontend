@@ -42,9 +42,9 @@ export default function MediaCard({
       {status === "pending" ? (
         <CardActions>
           <Button
-            onClick={() =>{
-              dispatch(updateEvent({ id: id, status: "approved" }))
-              dispatch(listAllEvent({ limit:5, page:1, search:"", status:"" }))
+            onClick={ async() =>{
+             await dispatch(updateEvent({ id: id, formdata:{status: "approved" }}))
+             await  dispatch(listAllEvent({ limit:5, page:1, search:"", status:"" }))
 
             }
             }
@@ -53,9 +53,9 @@ export default function MediaCard({
             Approve
           </Button>
           <Button
-            onClick={() =>{
-              dispatch(updateEvent({ id: id, status: "rejected" }))
-              dispatch(listAllEvent({ limit:5, page:1, search:"", status:"" }))
+            onClick={async () =>{
+              await dispatch(updateEvent({ id: id, formdata:{ status: "rejected"} }))
+              await  dispatch(listAllEvent({ limit:5, page:1, search:"", status:"" }))
             }
             }
               
